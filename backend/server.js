@@ -8,18 +8,31 @@ const Roadmap = require("./models/Roadmap");
 
 const app = express();
 
-app.use(cors());
+// CORS SETTINGS
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://your-netlify-app.netlify.app",
+    ],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
+// MONGODB CONNECTION
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((error) => console.log("MongoDB Error:", error));
 
+// TEST ROUTE
 app.get("/", (req, res) => {
   res.send("Backend Running");
 });
 
+// GENERATE ROADMAP
 app.post("/generate-roadmap", async (req, res) => {
   try {
     const { goal, level, hours } = req.body;
@@ -63,13 +76,15 @@ app.post("/generate-roadmap", async (req, res) => {
 
   } catch (error) {
     console.log(error);
+
     res.status(500).json({
       message: "Server Error",
     });
   }
 });
 
-const PORT = 5000;
+// PORT
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
