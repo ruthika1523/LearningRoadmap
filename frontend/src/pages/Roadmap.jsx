@@ -50,35 +50,41 @@ function Roadmap() {
 
   const handleSubmit = async (e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
+  try {
 
-      const response = await axios.post(
-        "http://localhost:5000/generate-roadmap",
-        {
-          goal,
-          level,
-          hours,
-        }
-      );
+    const response = await axios.post(
+      "http://localhost:5000/generate-roadmap",
+      {
+        goal,
+        level,
+        hours,
+      }
+    );
 
-      setRoadmap(response.data);
+    // ADD completed FIELD BACK
+    const updatedRoadmap =
+      response.data.map((step) => ({
+        ...step,
+        completed: false,
+      }));
 
-    } catch (error) {
+    setRoadmap(updatedRoadmap);
 
-      console.log(error);
+  } catch (error) {
 
-    } finally {
+    console.log(error);
 
-      setLoading(false);
+  } finally {
 
-    }
+    setLoading(false);
 
-  };
+  }
 
+};
   return (
 
     <div
