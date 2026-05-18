@@ -9,6 +9,7 @@ function Roadmap() {
   const [roadmap, setRoadmap] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // LOAD SAVED ROADMAP
   useEffect(() => {
 
     const savedRoadmap =
@@ -20,6 +21,7 @@ function Roadmap() {
 
   }, []);
 
+  // SAVE ROADMAP
   useEffect(() => {
 
     localStorage.setItem(
@@ -29,6 +31,7 @@ function Roadmap() {
 
   }, [roadmap]);
 
+  // CALCULATE PROGRESS
   const completedSteps = roadmap.filter(
     (step) => step.completed
   ).length;
@@ -38,6 +41,7 @@ function Roadmap() {
       ? (completedSteps / roadmap.length) * 100
       : 0;
 
+  // TOGGLE CHECKBOX
   const toggleComplete = (index) => {
 
     const updatedRoadmap = [...roadmap];
@@ -48,43 +52,47 @@ function Roadmap() {
     setRoadmap(updatedRoadmap);
   };
 
+  // GENERATE ROADMAP
   const handleSubmit = async (e) => {
 
-  e.preventDefault();
+    e.preventDefault();
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
+    try {
 
-    const response = await axios.post(
-      "http://localhost:5000/generate-roadmap",
-      {
-        goal,
-        level,
-        hours,
-      }
-    );
+      const response = await axios.post(
+        "https://learningroadmap.onrender.com/generate-roadmap",
+        {
+          goal,
+          level,
+          hours,
+        }
+      );
 
-    // ADD completed FIELD BACK
-    const updatedRoadmap =
-      response.data.map((step) => ({
-        ...step,
-        completed: false,
-      }));
+      // ADD completed FIELD
+      const updatedRoadmap =
+        response.data.map((step) => ({
+          ...step,
+          completed: false,
+        }));
 
-    setRoadmap(updatedRoadmap);
+      setRoadmap(updatedRoadmap);
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log(error);
+      console.log(error);
 
-  } finally {
+      alert("Backend not connected");
 
-    setLoading(false);
+    } finally {
 
-  }
+      setLoading(false);
 
-};
+    }
+
+  };
+
   return (
 
     <div
@@ -112,6 +120,7 @@ function Roadmap() {
             textAlign: "center",
             color: "#38bdf8",
             marginBottom: "30px",
+            fontSize: "50px",
           }}
         >
           AI Learning Roadmap Generator
@@ -165,11 +174,15 @@ function Roadmap() {
 
         {roadmap.length > 0 && (
 
-          <div style={{ marginTop: "30px" }}>
+          <div style={{ marginTop: "40px" }}>
 
-            <h3>
+            <h2
+              style={{
+                marginBottom: "15px",
+              }}
+            >
               Progress: {Math.round(progress)}%
-            </h3>
+            </h2>
 
             <div
               style={{
@@ -187,6 +200,7 @@ function Roadmap() {
                   width: `${progress}%`,
                   height: "100%",
                   background: "#38bdf8",
+                  transition: "0.3s",
                 }}
               ></div>
 
@@ -206,8 +220,9 @@ function Roadmap() {
                     toggleComplete(index)
                   }
                   style={{
-                    width: "20px",
-                    height: "20px",
+                    width: "22px",
+                    height: "22px",
+                    cursor: "pointer",
                   }}
                 />
 
@@ -222,6 +237,8 @@ function Roadmap() {
                       step.completed
                         ? "#94a3b8"
                         : "white",
+
+                    margin: 0,
                   }}
                 >
                   {step.title}
@@ -245,22 +262,26 @@ function Roadmap() {
 
 const inputStyle = {
   width: "100%",
-  padding: "14px",
-  marginBottom: "15px",
-  borderRadius: "10px",
-  border: "none",
-  fontSize: "16px",
+  padding: "18px",
+  marginBottom: "20px",
+  borderRadius: "12px",
+  border: "1px solid #475569",
+  background: "#0f172a",
+  color: "white",
+  fontSize: "18px",
+  outline: "none",
+  boxSizing: "border-box",
 };
 
 const buttonStyle = {
   width: "100%",
-  padding: "14px",
+  padding: "18px",
   background: "#38bdf8",
   border: "none",
-  borderRadius: "10px",
+  borderRadius: "12px",
   color: "black",
   fontWeight: "bold",
-  fontSize: "16px",
+  fontSize: "20px",
   cursor: "pointer",
 };
 
