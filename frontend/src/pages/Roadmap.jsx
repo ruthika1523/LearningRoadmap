@@ -67,23 +67,41 @@ function Roadmap() {
           goal,
           level,
           hours,
+        },
+        {
+          timeout: 30000,
         }
       );
 
-      // ADD completed FIELD
-      const updatedRoadmap =
-        response.data.map((step) => ({
-          ...step,
-          completed: false,
-        }));
+      console.log(
+        "ROADMAP DATA:",
+        response.data
+      );
 
-      setRoadmap(updatedRoadmap);
+      if (
+        response.data &&
+        response.data.length > 0
+      ) {
+
+        const updatedRoadmap =
+          response.data.map((step) => ({
+            ...step,
+            completed: false,
+          }));
+
+        setRoadmap(updatedRoadmap);
+
+      } else {
+
+        alert("No roadmap received");
+
+      }
 
     } catch (error) {
 
       console.log(error);
 
-      alert("Backend not connected");
+      alert("Backend connection failed");
 
     } finally {
 
@@ -184,6 +202,8 @@ function Roadmap() {
               Progress: {Math.round(progress)}%
             </h2>
 
+            {/* PROGRESS BAR */}
+
             <div
               style={{
                 width: "100%",
@@ -205,6 +225,8 @@ function Roadmap() {
               ></div>
 
             </div>
+
+            {/* ROADMAP STEPS */}
 
             {roadmap.map((step, index) => (
 
@@ -261,6 +283,7 @@ function Roadmap() {
 }
 
 const inputStyle = {
+
   width: "100%",
   padding: "18px",
   marginBottom: "20px",
@@ -271,9 +294,11 @@ const inputStyle = {
   fontSize: "18px",
   outline: "none",
   boxSizing: "border-box",
+
 };
 
 const buttonStyle = {
+
   width: "100%",
   padding: "18px",
   background: "#38bdf8",
@@ -283,9 +308,11 @@ const buttonStyle = {
   fontWeight: "bold",
   fontSize: "20px",
   cursor: "pointer",
+
 };
 
 const cardStyle = {
+
   background: "#334155",
   padding: "20px",
   borderRadius: "12px",
@@ -293,6 +320,7 @@ const cardStyle = {
   display: "flex",
   alignItems: "center",
   gap: "15px",
+
 };
 
 export default Roadmap;
